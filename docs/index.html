@@ -1,1 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamesZ.one</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script type="text/javascript" src="list.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Montserrat', sans-serif;
+      }
 
+      body {
+        background: url('https://raw.githubusercontent.com/2nxty/nx/refs/heads/main/docs/img/stock-teal.png') no-repeat center center fixed;
+        background-size: cover;
+        color: #e0e0e0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 900px;
+        padding: 10px;
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        min-height: 100vh;
+        /* Garante que o container ocupe a altura total da tela */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Centraliza o conteúdo verticalmente */
+      }
+
+      .container.active {
+        justify-content: flex-start;
+        padding-top: 20px;
+        padding-bottom: 100px;
+        /* Espaço adicional no container também pode ajudar */
+        transform: none;
+      }
+
+      .title {
+        font-size: 48px;
+        color: #fff;
+        margin-bottom: 30px;
+        transition: font-size 0.5s ease;
+      }
+
+      .container.active .title {
+        font-size: 36px;
+      }
+
+      .search-container {
+        display: flex;
+        gap: 10px;
+        background: rgba(20, 40, 40, 0.7);
+        backdrop-filter: blur(15px);
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 600px;
+        /* Ajustado para aproveitar o espaço do container */
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      .search-bar {
+        flex: 1;
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(50, 70, 70, 0.8);
+        color: #fff;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .search-bar:focus {
+        background: rgba(60, 80, 80, 0.9);
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+      }
+
+      .search-button {
+        font-size: 1rem;
+        padding: 12px 24px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.3s ease;
+      }
+
+      .search-button:hover {
+        background: #0056b3;
+        transform: scale(1.05);
+      }
+
+      .result-list {
+        list-style: none;
+        display: none;
+        margin-top: 20px;
+        background: rgba(20, 40, 40, 0.7);
+        backdrop-filter: blur(15px);
+        border-radius: 12px;
+        padding: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        animation: fadeIn 0.5s ease;
+        max-width: 600px;
+        /* Ajustado para aproveitar o espaço do container */
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .result-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        animation: slideIn 0.3s ease forwards;
+      }
+
+      .result-item:last-child {
+        border-bottom: none;
+      }
+
+      .item-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-align: left;
+      }
+
+      .item-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .item-name {
+        font-size: 16px;
+        color: #e0e0e0;
+      }
+
+      .item-button {
+        font-size: 1.1rem;
+        padding: 8px 16px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.3s ease;
+      }
+
+      .item-button:hover {
+        background: #0056b3;
+        transform: scale(1.05);
+      }
+
+      /* Footer da página Download */
+      .footer {
+        background: rgba(20, 40, 40, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: none;
+        color: #d0d0d0;
+        padding: 20px;
+        border-radius: 12px 12px 0 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(15px);
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        z-index: 2;
+      }
+
+      body.dark .footer {
+        text-decoration: none;
+        background: rgba(20, 40, 40, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: none;
+      }
+
+      body.light .footer {
+        text-decoration: none;
+        background: rgba(245, 245, 245, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: none;
+      }
+
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        text-decoration: none;
+      }
+
+      .footer p {
+        font-size: 14px;
+      }
+
+      body.dark .footer p {
+        color: #d0d0d0;
+      }
+
+      body.light .footer p {
+        color: #666666;
+      }
+
+      .footer-links a {
+        text-decoration: none;
+        margin-left: 20px;
+        font-size: 14px;
+        color: inherit;
+        transition: color 0.3s;
+      }
+
+      body.dark .footer-links a {
+        color: #d0d0d0;
+      }
+
+      body.light .footer-links a {
+        color: #666666;
+      }
+
+      .footer-links a:hover {}
+
+      i.baixo {
+        position: relative;
+        font-size: 20px;
+        top: 2px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-links {
+          margin-top: 10px;
+        }
+
+        .footer-links a {
+          margin: 0 10px;
+        }
+
+        .search-container {}
+      }
+
+      .result-item:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+
+      .result-item:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .result-item:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">GamesZ.one</h1>
+      <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search games...">
+        <button class="search-button">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+      <ul class="result-list"></ul>
+    </div>
+    <footer class="footer">
+      <div class="footer-content">
+        <p>GamesZ.one © 2025</p>
+        <div class="footer-links">
+          <!--a href="terms.html" target="_blank">Terms</a><a href="privacy.html" target="_blank">Privacy</a-->
+          <a href="https://github.com/2nxty" target="_blank">
+            <i class="bi bi-github baixo"></i> GitHub </a>
+        </div>
+      </div>
+    </footer>
+    <script>
+      const searchBar = document.querySelector('.search-bar');
+      const searchButton = document.querySelector('.search-button');
+      const resultList = document.querySelector('.result-list');
+      const container = document.querySelector('.container');
+
+      function renderList(items) {
+        resultList.innerHTML = '';
+        if (items.length > 0) {
+          resultList.style.display = 'block';
+          container.classList.add('active');
+          items.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'result-item';
+            li.innerHTML = `
+                        
+                                <div class="item-info">
+                                    <img src="${item.image}" alt="${item.name}" class="item-image">
+                                        <span class="item-name">${item.name}</span>
+                                    </div>
+                                    <a href="${item.link}" target="_blank" class="item-button">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                    `;
+            resultList.appendChild(li);
+          });
+        } else {
+          resultList.style.display = 'none';
+          container.classList.remove('active');
+        }
+      }
+
+      function filterItems(searchTerm) {
+        if (!searchTerm) {
+          resultList.style.display = 'none';
+          container.classList.remove('active');
+          return;
+        }
+        const filtered = data.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        renderList(filtered);
+      }
+      searchButton.addEventListener('click', () => {
+        const searchTerm = searchBar.value.trim();
+        filterItems(searchTerm);
+      });
+      searchBar.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          const searchTerm = searchBar.value.trim();
+          filterItems(searchTerm);
+        }
+      });
+    </script>
+    <script>
+      (function() {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement('script');
+            d.innerHTML = "window.__CF$cv$params={r:'91d3cf39dd8ebfae',t:'MTc0MTQ1MjM5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName('head')[0].appendChild(d)
+          }
+        }
+        if (document.body) {
+          var a = document.createElement('iframe');
+          a.height = 1;
+          a.width = 1;
+          a.style.position = 'absolute';
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = 'none';
+          a.style.visibility = 'hidden';
+          document.body.appendChild(a);
+          if ('loading' !== document.readyState) c();
+          else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c);
+          else {
+            var e = document.onreadystatechange || function() {};
+            document.onreadystatechange = function(b) {
+              e(b);
+              'loading' !== document.readyState && (document.onreadystatechange = e, c())
+            }
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
