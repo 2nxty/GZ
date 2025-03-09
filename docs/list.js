@@ -165,7 +165,7 @@ async function loadJsonData() {
         const responses = await Promise.all(
             jsonUrls.map(url => 
                 fetch(url).then(res => {
-                    if (!res.ok) throw new Error(`Erro ao carregar ${url}: ${res.status}`);
+                    if (!res.ok) throw new Error(`Error loading ${url}: ${res.status}`);
                     return res.json();
                 })
             )
@@ -199,9 +199,9 @@ async function loadJsonData() {
         renderList([]);
     } catch (error) {
         const resultList = document.querySelector('.result-list');
-        resultList.innerHTML = `Erro ao carregar os dados: ${error.message}`;
+        resultList.innerHTML = `Error loading data: ${error.message}`;
         resultList.style.display = 'block';
-        console.error('Erro ao carregar JSON:', error);
+        console.error('Error loading JSON:', error);
     }
 }
 
