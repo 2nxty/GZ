@@ -136,6 +136,7 @@
         width: 100%;
         margin-left: auto;
         margin-right: auto;
+        word-break: break-all;
       }
 
       .result-item {
@@ -183,6 +184,7 @@
       .item-name {
         font-size: 16px;
         color: #e0e0e0;
+        padding-right: 20px;
       }
 
       .item-button {
@@ -202,6 +204,25 @@
         transform: scale(1.05);
       }
 
+      .confirmation-button {
+        margin-top: 15px;
+        font-size: 0.8rem;
+        padding: 8px 16px;
+        background: #008080; 
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.3s ease;
+      }
+
+      .confirmation-button:hover {
+        background: #007070; 
+        transform: scale(1.05);
+      }
+
       .clos-button {
         margin-top: 15px;
         font-size: 0.8rem;
@@ -211,8 +232,7 @@
         border: none;
         border-radius: 8px;
         cursor: pointer;
-        display: block;
-        margin-left: auto;
+        display: flex;
         text-decoration: none;
         transition: transform 0.2s ease, background 0.3s ease;
       }
@@ -358,7 +378,7 @@
       /* Firefox */
       * {
         scrollbar-width: thin;
-        scrollbar-color: #007070 #0c1a1a;
+        scrollbar-color: #006060 #0c1a1a;
       }
 
       /* Chrome, Edge, and Safari */
@@ -371,7 +391,7 @@
       }
 
       *::-webkit-scrollbar-thumb {
-        background-color: #007070;
+        background-color: #006060;
         border-radius: 10px;
         border: 0px solid #ffffff;
       }
@@ -393,7 +413,7 @@
         <p>GamesZ.one © 2025 - A safe place to get games.</p>
         <div class="footer-links">
           <!--a href="" target="_blank">Data from 666</a-->
-          <a class="curp" onclick="installOnHydra()">Install on Hydra Launcher</a>
+          <!--a class="curp" onclick="installOnHydra()">Install on Hydra Launcher</a-->
           <a href="https://github.com/2nxty/gz" target="_blank">
             <i class="bi bi-github baixo"></i> GitHub </a>
         </div>
@@ -404,37 +424,6 @@
       function installOnHydra() {
         window.open("hydralauncher://install-source?urls=https://gamesz.one/gz.json");
       }
-      (function() {
-        function c() {
-          var b = a.contentDocument || a.contentWindow.document;
-          if (b) {
-            var d = b.createElement('script');
-            d.innerHTML = "window.__CF$cv$params={r:'91d3cf39dd8ebfae',t:'MTc0MTQ1MjM5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
-            b.getElementsByTagName('head')[0].appendChild(d)
-          }
-        }
-        
-        if (document.body) {
-          var a = document.createElement('iframe');
-          a.height = 1;
-          a.width = 1;
-          a.style.position = 'absolute';
-          a.style.top = 0;
-          a.style.left = 0;
-          a.style.border = 'none';
-          a.style.visibility = 'hidden';
-          document.body.appendChild(a);
-          if ('loading' !== document.readyState) c();
-          else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c);
-          else {
-            var e = document.onreadystatechange || function() {};
-            document.onreadystatechange = function(b) {
-              e(b);
-              'loading' !== document.readyState && (document.onreadystatechange = e, c())
-            }
-          }
-        }
-      })();
     </script>
   </body>
 </html>

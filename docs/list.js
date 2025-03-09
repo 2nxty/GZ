@@ -1,7 +1,7 @@
 // Função para formatar o texto do link no modal
 function formatLinkText(uri) {
     if (uri.startsWith('magnet')) {
-        return 'Torrent';
+        return 'Magnet';
     } else if (uri.startsWith('http')) {
         const url = new URL(uri);
         return `${url.hostname}`;
@@ -53,28 +53,32 @@ function createModal(title, uris) {
         const li = document.createElement('li');
         li.className = 'result-li';
         const linkText = document.createElement('span');
-        linkText.textContent = formatLinkText(uri);
-        linkText.style.color = '#fff'; // Texto em branco
+        const icon = uri.startsWith('magnet') ? '<i class="bi bi-magnet"></i>' : '<i class="bi bi-box-arrow-up-right"></i>';
+        linkText.innerHTML = `${icon}<span style="margin-left: 10px;">${formatLinkText(uri)}</span>`;
+        linkText.style.color = '#e0e0e0'; // Texto em branco
 
-        const downloadButton = document.createElement('a');
-        downloadButton.href = uri;
-        downloadButton.target = '_blank';
-        downloadButton.innerHTML = '<i class="bi bi-download"></i>';
+        const downloadButton = document.createElement('button');
+        downloadButton.innerHTML = '<i class="bi bi-arrow-right"></i>';
         downloadButton.className = 'item-button'; // Reutiliza o estilo do botão da lista
+        downloadButton.onclick = () => window.open(uri, '_blank'); // Abre o link em nova aba
 
         li.appendChild(linkText);
         li.appendChild(downloadButton);
         linkList.appendChild(li);
     });
 
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `display: flex; justify-content: flex-end;`;
+
     const closeButton = document.createElement('button');
     closeButton.textContent = 'CLOSE';
     closeButton.className = 'clos-button';
     closeButton.onclick = () => document.body.removeChild(modal);
 
+    buttonContainer.appendChild(closeButton);
     modalContent.appendChild(modalTitle);
     modalContent.appendChild(linkList);
-    modalContent.appendChild(closeButton);
+    modalContent.appendChild(buttonContainer);
     modal.appendChild(modalContent);
 
     document.body.appendChild(modal);
@@ -87,50 +91,130 @@ function renderList(items) {
     
     resultList.innerHTML = '';
     if (items.length > 0) {
-        resultList.style.display = 'block';
-        container.classList.add('active');
-        items.forEach((item, index) => {
-            const isMagnet = item.uris.some(uri => uri.startsWith('magnet'));
-            const isMultipleHttp = item.uris.filter(uri => uri.startsWith('http')).length > 1;
-            const isHttp = item.uris.some(uri => uri.startsWith('http'));
-            let fileSizeText = item.fileSize;
-            if (isMagnet) {
-                fileSizeText += ' - Torrent';
-            } else if (isMultipleHttp) {
-                fileSizeText += ' - Multiple hosts';
-            } else if (isHttp) {
-                fileSizeText += ' - Direct link';
-            }
-            const li = document.createElement('li');
-            li.className = 'result-item';
-            li.style.animationDelay = `${0.1 * (index + 1)}s`;
-            li.innerHTML = `
-                <div class="item-info">
-                    <img src="${item.image || 'https://placehold.co/50x50'}" alt="${item.title}" class="item-image">
-                    <div>
-                        <span class="item-name">${item.title}</span>
-                        <br>
-                        <span style="font-size: 14px; color: #b0b0b0;">
-                            ${fileSizeText}
-                        </span>
-                    </div>
-                </div>
-                <button class="item-button"><i class="bi bi-download"></i></button>
+        if (items.length > 500) {
+            const confirmModal = document.createElement('div');
+            confirmModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
             `;
-            const button = li.querySelector('.item-button');
-            button.onclick = () => {
-                if (item.uris.length > 1) {
-                    createModal(item.title, item.uris);
-                } else {
-                    window.open(item.uris[0], '_blank');
-                }
+
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: rgba(20, 40, 40, 0.7);
+                backdrop-filter: blur(15px);
+                padding: 20px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                animation: fadeIn 0.5s ease;
+                max-width: 500px;
+                width: 90%;
+                color: #e0e0e0;
+            `;
+
+            const modalTitle = document.createElement('h3');
+            modalTitle.textContent = '⚠️ Large result list';
+            modalTitle.style.marginBottom = '15px';
+
+            const message = document.createElement('p');
+            message.textContent = `Your search returned ${items.length} results. Loading this many items may slow down performance. Do you want to proceed?`;
+            message.style.marginBottom = '5px';
+
+            const messages = document.createElement('p');
+            messages.textContent = `Clicking NO will only show the first 500 results.`;
+            messages.style.marginBottom = '10px';
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.cssText = `display: flex; justify-content: flex-end; gap: 10px;`;
+
+            const confirmButton = document.createElement('button');
+            confirmButton.textContent = 'YES, Load all results';
+            confirmButton.className = 'confirmation-button';
+            confirmButton.onclick = () => {
+                document.body.removeChild(confirmModal);
+                loadResults(items);
             };
-            resultList.appendChild(li);
-        });
+
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'NO';
+            cancelButton.className = 'clos-button';
+            cancelButton.onclick = () => {
+                document.body.removeChild(confirmModal);
+                loadResults(items.slice(0, 500)); // Carrega apenas os primeiros 500 itens
+            };
+
+            buttonContainer.appendChild(confirmButton);
+            buttonContainer.appendChild(cancelButton);
+            modalContent.appendChild(modalTitle);
+            modalContent.appendChild(message);
+            modalContent.appendChild(messages);
+            modalContent.appendChild(buttonContainer);
+            confirmModal.appendChild(modalContent);
+            document.body.appendChild(confirmModal);
+        } else {
+            loadResults(items);
+        }
     } else {
         resultList.style.display = 'none';
         container.classList.remove('active');
     }
+}
+
+// Função auxiliar para carregar os resultados
+function loadResults(items) {
+    const resultList = document.querySelector('.result-list');
+    const container = document.querySelector('.container');
+    
+    resultList.style.display = 'block';
+    container.classList.add('active');
+    items.forEach((item, index) => {
+        const magnetLinks = item.uris.filter(uri => uri.startsWith('magnet'));
+        const isMagnetOnly = magnetLinks.length === 1 && item.uris.length === 1;
+        const isMagnetWithOthers = magnetLinks.length > 0 && item.uris.length > 1;
+        const isMultipleHttp = item.uris.filter(uri => uri.startsWith('http')).length > 1;
+        const isSingleHttp = item.uris.length === 1 && item.uris[0].startsWith('http');
+        let fileSizeText = item.fileSize;
+        if (isMagnetOnly) {
+            fileSizeText += ' - Torrent';
+        } else if (isMagnetWithOthers || isMultipleHttp) {
+            fileSizeText += ' - Multiple hosts';
+        } else if (isSingleHttp) {
+            fileSizeText += ' - Direct link';
+        }
+        const li = document.createElement('li');
+        li.className = 'result-item';
+        li.style.animationDelay = `${0.1 * (index + 1)}s`;
+        li.innerHTML = `
+            <div class="item-info">
+                ${isMagnetOnly ? '<i class="bi bi-magnet"></i>' : isSingleHttp ? '<i class="bi bi-box-arrow-up-right"></i>' : '<i class="bi bi-folder-plus"></i>'}
+                <div>
+                    <span class="item-name">${item.title}</span>
+                    <br>
+                    <span style="font-size: 14px; color: #b0b0b0;">
+                        ${fileSizeText}
+                    </span>
+                </div>
+            </div>
+            <button class="item-button"><i class="bi bi-arrow-right"></i></button>
+        `;
+        const button = li.querySelector('.item-button');
+        button.onclick = () => {
+            if (item.uris.length > 1) {
+                createModal(item.title, item.uris);
+            } else {
+                window.open(item.uris[0], '_blank');
+            }
+        };
+        resultList.appendChild(li);
+    });
 }
 
 // Função para filtrar os itens
@@ -163,21 +247,36 @@ async function loadJsonData() {
 
     try {
         const responses = await Promise.all(
-            jsonUrls.map(url => 
-                fetch(url).then(res => {
-                    if (!res.ok) throw new Error(`Error loading ${url}: ${res.status}`);
-                    return res.json();
-                })
+            jsonUrls.map(url =>
+                fetch(url)
+                    .then(res => {
+                        if (!res.ok) {
+                            console.warn(`Failed to load ${url}: ${res.status}`);
+                            return null; // Retorna null para URLs com erro
+                        }
+                        return res.json();
+                    })
+                    .catch(err => {
+                        console.warn(`Error fetching ${url}: ${err.message}`);
+                        return null; // Retorna null em caso de erro
+                    })
             )
         );
 
-        // Combina todos os downloads em uma única array
-        const allData = responses.reduce((acc, data) => {
-            if (data.downloads && Array.isArray(data.downloads)) {
-                return acc.concat(data.downloads);
-            }
-            return acc;
-        }, []);
+        // Filtra os resultados nulos e combina os downloads válidos
+        const allData = responses
+            .filter(data => data !== null) // Remove os que falharam
+            .reduce((acc, data) => {
+                if (data.downloads && Array.isArray(data.downloads)) {
+                    return acc.concat(data.downloads);
+                }
+                return acc;
+            }, []);
+
+        // Se nenhum JSON foi carregado com sucesso, exibe erro
+        if (allData.length === 0) {
+            throw new Error('No valid data loaded from any source');
+        }
 
         // Configurar eventos de busca
         const searchBar = document.querySelector('.search-bar');
