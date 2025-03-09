@@ -91,6 +91,16 @@ function renderList(items) {
         container.classList.add('active');
         items.forEach((item, index) => {
             const isMagnet = item.uris.some(uri => uri.startsWith('magnet'));
+            const isMultipleHttp = item.uris.filter(uri => uri.startsWith('http')).length > 1;
+            const isHttp = item.uris.some(uri => uri.startsWith('http'));
+            let fileSizeText = item.fileSize;
+            if (isMagnet) {
+                fileSizeText += ' - Torrent';
+            } else if (isMultipleHttp) {
+                fileSizeText += ' - Multiple hosts';
+            } else if (isHttp) {
+                fileSizeText += ' - Direct link';
+            }
             const li = document.createElement('li');
             li.className = 'result-item';
             li.style.animationDelay = `${0.1 * (index + 1)}s`;
@@ -101,7 +111,7 @@ function renderList(items) {
                         <span class="item-name">${item.title}</span>
                         <br>
                         <span style="font-size: 14px; color: #b0b0b0;">
-                            ${item.fileSize}${isMagnet ? ' - Torrent' : ''}
+                            ${fileSizeText}
                         </span>
                     </div>
                 </div>
