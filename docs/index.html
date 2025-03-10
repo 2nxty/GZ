@@ -147,7 +147,28 @@
         padding: 15px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         opacity: 0;
-        /* animation: slideIn 1s ease forwards; */
+        animation: slideIn 0.5s ease forwards;
+        /* animation-delay: 0.5s; */
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px); /* Começa 20px abaixo */
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0); /* Termina na posição original */
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
 
       .result-item:last-child {
@@ -415,6 +436,7 @@
         <div class="footer-links">
           <!--a href="" target="_blank">Data from 666</a-->
           <!--a class="curp" onclick="installOnHydra()">Install on Hydra Launcher</a-->
+          <!--button id="openTextModal">Text Modal</button-->
           <a href="https://github.com/2nxty/gz" target="_blank">
             <i class="bi bi-github baixo"></i> GitHub </a>
         </div>
@@ -425,6 +447,15 @@
       function installOnHydra() {
         window.open("hydralauncher://install-source?urls=https://gamesz.one/gz.json");
       }
+      document.getElementById('openTextModal').addEventListener('click', () => {
+        createTextModal(
+          'Title',
+          'Text',
+          () => {
+              console.log('Callback example');
+          }
+        );
+      });
     </script>
   </body>
 </html>

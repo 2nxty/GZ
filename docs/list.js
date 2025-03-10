@@ -84,6 +84,72 @@ function createModal(title, uris) {
     document.body.appendChild(modal);
 }
 
+// Função para criar um modal com texto simples
+function createTextModal(title, message, onConfirm) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background: rgba(20, 40, 40, 0.7);
+        backdrop-filter: blur(15px);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        animation: fadeIn 0.5s ease;
+        max-width: 500px;
+        width: 90%;
+        color: #e0e0e0;
+    `;
+
+    const modalTitle = document.createElement('h3');
+    modalTitle.textContent = title;
+    modalTitle.style.marginBottom = '15px';
+
+    const messageText = document.createElement('p');
+    messageText.textContent = message;
+    messageText.style.marginBottom = '20px';
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `display: flex; justify-content: flex-end; gap: 10px;`;
+
+    const confirmButton = document.createElement('button');
+    confirmButton.textContent = 'CONFIRM';
+    confirmButton.className = 'confirmation-button';
+    confirmButton.onclick = () => {
+        document.body.removeChild(modal); // Fecha o modal
+        if (onConfirm && typeof onConfirm === 'function') {
+            onConfirm(); // Executa a função personalizada, se fornecida
+        }
+    };
+
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'CLOSE';
+    closeButton.className = 'clos-button';
+    closeButton.onclick = () => document.body.removeChild(modal);
+
+    buttonContainer.appendChild(confirmButton);
+    buttonContainer.appendChild(closeButton);
+    modalContent.appendChild(modalTitle);
+    modalContent.appendChild(messageText);
+    modalContent.appendChild(buttonContainer);
+    modal.appendChild(modalContent);
+
+    document.body.appendChild(modal);
+}
+
 // Função para carregar itens na lista
 function loadResults(items, startIndex, count) {
     const resultList = document.querySelector('.result-list');
@@ -106,7 +172,6 @@ function loadResults(items, startIndex, count) {
         }
         const li = document.createElement('li');
         li.className = 'result-item';
-        li.style.opacity = '0'; // Começa invisível para a animação
         li.innerHTML = `
             <div class="item-info">
                 ${isMagnetOnly ? '<i class="bi bi-magnet"></i>' : isSingleHttp ? '<i class="bi bi-box-arrow-up-right"></i>' : '<i class="bi bi-folder-plus"></i>'}
@@ -120,6 +185,11 @@ function loadResults(items, startIndex, count) {
             </div>
             <button class="item-button"><i class="bi bi-arrow-right"></i></button>
         `;
+        
+        // Calcula o delay baseado na posição relativa dentro do lote
+        const delay = (index - startIndex) * 0.1; // 0.1s de delay por item
+        li.style.animation = `slideIn 0.5s ease ${delay}s forwards`; // Define a animação imediatamente
+        
         const button = li.querySelector('.item-button');
         button.onclick = () => {
             if (item.uris.length > 1) {
@@ -129,12 +199,6 @@ function loadResults(items, startIndex, count) {
             }
         };
         resultList.appendChild(li);
-
-        // Força a animação após adicionar ao DOM
-        requestAnimationFrame(() => {
-            li.style.transition = 'slideIn 1s ease forwards';
-            li.style.opacity = '1';
-        });
     }
 }
 
@@ -154,8 +218,8 @@ function renderList(items) {
         container.classList.add('active');
 
         let loadedCount = 0;
-        const batchSize = 100; // Quantidade de itens a carregar por vez após os primeiros 100
-        const initialLoad = Math.min(200, items.length); // Carrega até 200 inicialmente
+        const batchSize = 10; // Quantidade de itens a carregar por vez após os primeiros 100
+        const initialLoad = Math.min(30, items.length); // Carrega até 30 inicialmente
 
         // Carrega os primeiros 100 resultados
         loadResults(items, 0, initialLoad);
@@ -186,9 +250,13 @@ function filterItems(searchTerm, allData) {
         renderList([]);
         return;
     }
-    const filtered = allData.filter(item => 
-        item.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filtered = allData
+        .filter(item => item.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        .sort((a, b) => {
+            const dateA = a.uploadDate ? new Date(a.uploadDate) : new Date(0); // Fallback para epoch se não houver data
+            const dateB = b.uploadDate ? new Date(b.uploadDate) : new Date(0);
+            return dateB - dateA; // Ordem decrescente (mais recente primeiro)
+        });
     renderList(filtered);
 }
 
