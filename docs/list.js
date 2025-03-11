@@ -263,7 +263,7 @@ function filterItems(searchTerm, allData) {
 // Função para carregar múltiplos arquivos JSON
 async function loadJsonData() {
     const jsonUrls = [
-        'https://raw.githubusercontent.com/2nxty/GZ/refs/heads/main/docs/gz.json',
+        'https://raw.githubusercontent.com/srtmd/cnx/refs/heads/main/docs/gz.json',
         'https://raw.githubusercontent.com/Shisuiicaro/source/refs/heads/main/shisuyssource.json',
         'https://davidkazumi.github.io/fontekazumi.json',
         'https://hydralinks.cloud/sources/onlinefix.json',
