@@ -331,5 +331,33 @@ async function loadJsonData() {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Função para obter o parâmetro "game" da URL
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // Obtém o valor do parâmetro "game"
+    const gameValue = getQueryParam("game");
+
+    if (gameValue) {
+        const searchBar = document.querySelector(".search-bar");
+
+        if (searchBar) {
+            searchBar.value = gameValue;
+
+            // Aguarde um pequeno tempo antes de acionar o clique
+            setTimeout(() => {
+                const searchButton = document.querySelector(".search-button");
+                if (searchButton) {
+                    searchButton.click();
+                }
+            }, 500); // Meio segundo de delay para garantir que o input seja processado
+        }
+    }
+});
+
+
 // Chamar a função quando a página carregar
 window.onload = loadJsonData;
