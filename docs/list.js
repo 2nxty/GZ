@@ -266,6 +266,7 @@ async function loadJsonData() {
         'https://raw.githubusercontent.com/srtmd/cnx/refs/heads/main/docs/gz.json',
         'https://raw.githubusercontent.com/Shisuiicaro/source/refs/heads/main/shisuyssource.json',
         'https://davidkazumi.github.io/fontekazumi.json',
+        'https://hydralinks.cloud/sources/steamrip-software.json',
         'https://hydralinks.cloud/sources/onlinefix.json',
         'https://hydralinks.cloud/sources/xatab.json',
         'https://hydralinks.cloud/sources/kaoskrew.json',
@@ -353,7 +354,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (searchButton) {
                     searchButton.click();
                 }
-            }, 500); // Meio segundo de delay para garantir que o input seja processado
+            }, 1000); // 1 segundo de delay para garantir que o input seja processado
         }
     }
 });
