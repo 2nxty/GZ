@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="fav.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script type="text/javascript" src="list.js"></script>
     <style>
       * {
         margin: 0;
@@ -45,15 +46,18 @@
         z-index: 2;
         text-align: center;
         min-height: 100vh;
+        /* Garante que o container ocupe a altura total da tela */
         display: flex;
         flex-direction: column;
         justify-content: center;
+        /* Centraliza o conteúdo verticalmente */
       }
 
       .container.active {
         justify-content: flex-start;
         padding-top: 20px;
         padding-bottom: 100px;
+        /* Espaço adicional no container também pode ajudar */
         transform: none;
       }
 
@@ -68,7 +72,7 @@
         font-size: 36px;
       }
 
-      .button-container {
+      .search-container {
         display: flex;
         gap: 10px;
         background: rgba(20, 40, 40, 0.7);
@@ -78,11 +82,29 @@
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         border: 1px solid rgba(255, 255, 255, 0.1);
         max-width: 600px;
+        /* Ajustado para aproveitar o espaço do container */
+        width: 100%;
         margin: 0 auto;
-        justify-content: center;
       }
 
-      .install-button {
+      .search-bar {
+        flex: 1;
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(50, 70, 70, 0.8);
+        color: #fff;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .search-bar:focus {
+        background: rgba(60, 80, 80, 0.9);
+        box-shadow: 0 0 10px rgba(0, 112, 112, 0.5);
+      }
+
+      .search-button {
         font-size: 1rem;
         padding: 12px 24px;
         background: #008080;
@@ -93,24 +115,8 @@
         transition: transform 0.2s ease, background 0.3s ease;
       }
 
-      .install-button:hover {
+      .search-button:hover {
         background: #007070;
-        transform: scale(1.05);
-      }
-
-      .copy-button {
-        font-size: 1rem;
-        padding: 12px 24px;
-        background: #005050;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: transform 0.2s ease, background 0.3s ease;
-      }
-
-      .copy-button:hover {
-        background: #004040;
         transform: scale(1.05);
       }
 
@@ -126,6 +132,7 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
         animation: fadeIn 0.5s ease;
         max-width: 600px;
+        /* Ajustado para aproveitar o espaço do container */
         width: 100%;
         margin-left: auto;
         margin-right: auto;
@@ -139,17 +146,19 @@
         justify-content: space-between;
         padding: 15px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 0;
         animation: slideIn 0.5s ease forwards;
+        /* animation-delay: 0.5s; */
       }
 
       @keyframes slideIn {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(20px); /* Começa 20px abaixo */
         }
         to {
           opacity: 1;
-          transform: translateY(0);
+          transform: translateY(0); /* Termina na posição original */
         }
       }
 
@@ -255,6 +264,7 @@
         transform: scale(1.05);
       }
 
+      /* Footer da página Download */
       .footer {
         background: rgba(20, 40, 40, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -333,10 +343,28 @@
         top: 2px;
       }
 
-      i.normal {
-        position: relative;
-        font-size: 20px;
-        top: 1px;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
       }
 
       @media (max-width: 768px) {
@@ -352,6 +380,8 @@
         .footer-links a {
           margin: 0 10px;
         }
+
+        .search-container {}
       }
 
       .result-item:nth-child(1) {
@@ -366,11 +396,14 @@
         animation-delay: 0.3s;
       }
 
+      /* ===== Scrollbar CSS ===== */
+      /* Firefox */
       * {
         scrollbar-width: thin;
         scrollbar-color: #006060 #0c1a1a;
       }
 
+      /* Chrome, Edge, and Safari */
       *::-webkit-scrollbar {
         width: 15px;
       }
@@ -388,13 +421,11 @@
   </head>
   <body>
     <div class="container">
-      <h1 class="title">GZ Source</h1>
-      <div class="button-container">
-        <button class="install-button" onclick="installOnHydra()">
-          Install on Hydra <i class="bi bi-arrow-right normal"></i>
-        </button>
-        <button class="copy-button" onclick="copyLink()">
-          Copy link <i class="bi bi-copy normal"></i>
+      <h1 class="title">GZ Search</h1>
+      <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search games...">
+        <button class="search-button">
+          <i class="bi bi-search"></i>
         </button>
       </div>
       <ul class="result-list"></ul>
@@ -403,7 +434,9 @@
       <div class="footer-content">
         <p>GamesZone © 2025 - A safe place to get games.</p>
         <div class="footer-links">
-          <a class="curp" onclick="searchGames()"><i class="bi bi-search baixo"></i> Search games</a>
+          <!--a href="" target="_blank">Data from 666</a-->
+          <a class="curp" onclick="goback()"><i class="bi bi-download baixo"></i> Install on Hydra</a>
+          <!--button id="openTextModal">Text Modal</button-->
           <a href="https://github.com/2nxty/gz" target="_blank">
             <i class="bi bi-github baixo"></i> GitHub </a>
         </div>
@@ -411,19 +444,24 @@
     </footer>
     
     <script>
-      function searchGames() {
-        window.location.href = "search.html";
+      function goback() {
+        window.location.href = "index.html";
       }
 
       function installOnHydra() {
-        window.location.href = "hydralauncher://install-source?urls=https://cdn.nxty.cc/gz.json";
+        window.open("hydralauncher://install-source?urls=https://cdn.nxty.cc/gz.json");
       }
+      document.getElementById('openTextModal').addEventListener('click', () => {
+        createTextModal(
+          'Title',
+          'Text',
+          () => {
+              console.log('Callback example');
+          }
+        );
+      });
 
-      function copyLink() {
-        navigator.clipboard.writeText("https://cdn.nxty.cc/gz.json")
-          .then(() => alert("Link copied to clipboard!"))
-          .catch(err => console.error("Failed to copy link: ", err));
-      }
+      
     </script>
   </body>
 </html>
