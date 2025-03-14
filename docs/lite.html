@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamesZone Lite - A safe place to get games.</title>
+    <link rel="icon" type="image/x-icon" href="fav.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script type="text/javascript" src="list.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      body {
+        background: #1c1c1c;
+        color: #e0e0e0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 700px;
+        padding: 20px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        margin-top: 20px;
+      }
+
+      .title {
+        font-size: 48px;
+        color: #00a8a8;
+        margin-bottom: 20px;
+      }
+
+      .search-container {
+        display: flex;
+        gap: 10px;
+        background: transparent;
+        padding: 0px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0);
+      }
+
+      .search-bar {
+        flex: 1;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        background: #333;
+        color: #fff;
+      }
+
+      .search-button {
+        background: #00a8a8;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .search-button:hover {
+        background: #008080;
+      }
+
+      .result-list {
+        list-style: none;
+        margin-top: 20px;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        display: none;
+        word-break: break-all;
+      }
+
+      .result-item {
+        opacity: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        animation: slideIn 0.5s ease forwards;
+      }
+
+      .result-item:last-child {
+        border-bottom: none;
+      }
+
+      .result-li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .result-li:last-child {
+        border-bottom: none;
+      }
+
+      .item-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-align: left;
+      }
+
+      .item-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        display: none;
+      }
+
+      .item-name {
+        font-size: 16px;
+        color: #e0e0e0;
+        padding-right: 20px;
+      }
+
+      .item-button {
+        font-size: 1.1rem;
+        padding: 8px 16px;
+        background: #008080;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.3s ease;
+      }
+
+      .item-button:hover {
+        background: #007070;
+        transform: scale(1.05);
+      }
+
+      .confirmation-button {
+        margin-top: 15px;
+        font-size: 0.8rem;
+        padding: 8px 16px;
+        background: #008080; 
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.3s ease;
+      }
+
+      .confirmation-button:hover {
+        background: #007070; 
+        transform: scale(1.05);
+      }
+
+      .clos-button {
+        margin-top: 15px;
+        font-size: 0.8rem;
+        padding: 8px 16px;
+        background: #d1473b;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.3s ease;
+      }
+
+      .clos-button:hover {
+        background: #ab392e;
+        transform: scale(1.05);
+      }
+
+      .footer {
+        max-width: 700px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #ccc;
+        width: 100%;
+      }
+
+      .footer a {
+        color: #00a8a8;
+        text-decoration: none;
+      }
+
+      .footer-content {
+        
+        margin: 0 auto;
+        text-decoration: none;
+      }
+
+      .curp {
+        cursor: pointer;
+      }
+
+      i.baixo {
+        position: relative;
+        font-size: 18px;
+        top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">GZ Lite</h1>
+      <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search games...">
+        <button class="search-button">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+      <ul class="result-list"></ul>
+    </div>
+    <footer class="footer">
+      <p>GamesZone Lite © 2025 </p>
+      <a class="curp" onclick="installOnHydra()">[ Install GZ Source on Hydra ] </a> 
+      <a href="https://github.com/2nxty/gz" target="_blank"> [ <i class="bi bi-github baixo"></i> GitHub ]</a>
+    </footer>
+    <script>
+      function installOnHydra() {
+        window.open("hydralauncher://install-source?urls=https://cdn.nxty.cc/gz.json");
+      }
+      document.getElementById('openTextModal').addEventListener('click', () => {
+        createTextModal(
+          'Title',
+          'Text',
+          () => {
+              console.log('Callback example');
+          }
+        );
+      });
+    </script>
+  </body>
+</html>

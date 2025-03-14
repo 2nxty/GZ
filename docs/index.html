@@ -16,6 +16,7 @@
       }
 
       body {
+        background-color: #007070;
         background: url('https://raw.githubusercontent.com/2nxty/nx/refs/heads/main/docs/img/stock-teal.png') no-repeat center center fixed;
         background-size: cover;
         color: #e0e0e0;
@@ -24,7 +25,6 @@
         justify-content: center;
         align-items: center;
         position: relative;
-        background-color: black;
       }
 
       body::before {
@@ -425,6 +425,16 @@
           .then(() => alert("Link copied to clipboard!"))
           .catch(err => console.error("Failed to copy link: ", err));
       }
+
+      function redirectGameParam() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameParam = urlParams.get("game");
+        if (gameParam) {
+            const newUrl = `search.html?game=${encodeURIComponent(gameParam)}`;
+            window.location.href = newUrl;
+        }
+      }
+      window.onload = redirectGameParam;
     </script>
   </body>
 </html>
