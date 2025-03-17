@@ -162,13 +162,13 @@ function loadResults(items, startIndex, count) {
         const isMagnetWithOthers = magnetLinks.length > 0 && item.uris.length > 1;
         const isMultipleHttp = item.uris.filter(uri => uri.startsWith('http')).length > 1;
         const isSingleHttp = item.uris.length === 1 && item.uris[0].startsWith('http');
-        let fileSizeText = item.fileSize;
+        let fileSizeText = `${item.sourceName} | ${item.fileSize}`; // Adiciona o name antes do fileSize
         if (isMagnetOnly) {
-            fileSizeText += ' - Torrent';
+            fileSizeText += ' | Torrent';
         } else if (isMagnetWithOthers || isMultipleHttp) {
-            fileSizeText += ' - Multiple hosts';
+            fileSizeText += ' | Multiple hosts';
         } else if (isSingleHttp) {
-            fileSizeText += ' - Direct link';
+            fileSizeText += ' | Direct link';
         }
         const li = document.createElement('li');
         li.className = 'result-item';
@@ -260,7 +260,7 @@ function filterItems(searchTerm, allData) {
     renderList(filtered);
 }
 
-// Função para carregar múltiplos arquivos JSON
+// Função para carregar múltiplos arquivos JSON com timeout
 async function loadJsonData() {
     const jsonUrls = [
         'https://raw.githubusercontent.com/srtmd/cnx/refs/heads/main/docs/gz.json',
@@ -280,26 +280,34 @@ async function loadJsonData() {
     try {
         const responses = await Promise.all(
             jsonUrls.map(url =>
-                fetch(url)
-                    .then(res => {
-                        if (!res.ok) {
-                            console.warn(`Failed to load ${url}: ${res.status}`);
-                            return null;
-                        }
-                        return res.json();
-                    })
-                    .catch(err => {
-                        console.warn(`Error fetching ${url}: ${err.message}`);
-                        return null;
-                    })
+                Promise.race([
+                    fetch(url, { signal: AbortSignal.timeout(5000) }) // Timeout de 5 segundos
+                        .then(res => {
+                            if (!res.ok) {
+                                console.warn(`Failed to load ${url}: ${res.status}`);
+                                return null; // Retorna null para 404 ou outros erros
+                            }
+                            return res.json();
+                        })
+                        .catch(err => {
+                            console.warn(`Error fetching ${url}: ${err.message}`);
+                            return null; // Retorna null para timeout ou outros erros
+                        }),
+                    new Promise(resolve => setTimeout(() => resolve(null), 5000)) // Garante null se demorar demais
+                ])
             )
         );
 
         const allData = responses
-            .filter(data => data !== null)
+            .filter(data => data !== null) // Remove respostas nulas (falhas)
             .reduce((acc, data) => {
                 if (data.downloads && Array.isArray(data.downloads)) {
-                    return acc.concat(data.downloads);
+                    // Adiciona o "name" do JSON a cada item de downloads
+                    const downloadsWithSource = data.downloads.map(download => ({
+                        ...download,
+                        sourceName: data.name || 'Unknown Source' // Fallback se "name" não existir
+                    }));
+                    return acc.concat(downloadsWithSource);
                 }
                 return acc;
             }, []);
@@ -358,7 +366,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
-
 
 // Chamar a função quando a página carregar
 window.onload = loadJsonData;
