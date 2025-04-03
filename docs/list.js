@@ -271,6 +271,7 @@ async function loadJsonData() {
         'https://hydralinks.cloud/sources/kaoskrew.json',
         'https://hydralinks.cloud/sources/gog.json',
         'https://hydralinks.cloud/sources/atop-games.json',
+        'https://hydralinks.cloud/sources/repack-games.json',
         'https://hydralinks.cloud/sources/dodi.json',
         'https://hydralinks.cloud/sources/fitgirl.json',
         // Adicione mais URLs conforme necessário
