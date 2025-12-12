@@ -265,15 +265,16 @@ async function loadJsonData() {
     const jsonUrls = [
         'https://raw.githubusercontent.com/srtmd/cnx/refs/heads/main/docs/gz.json',
         'https://raw.githubusercontent.com/Shisuiicaro/source/refs/heads/main/shisuyssource.json',
-        'https://davidkazumi.github.io/fontekazumi.json',
-        'https://hydralinks.cloud/sources/onlinefix.json',
-        'https://hydralinks.cloud/sources/xatab.json',
-        'https://hydralinks.cloud/sources/kaoskrew.json',
-        'https://hydralinks.cloud/sources/gog.json',
-        'https://hydralinks.cloud/sources/atop-games.json',
+        'https://davidkazumi-github-io.pages.dev/fontekazumi.json',
+        'https://hydralinks.pages.dev/sources/onlinefix.jsonn',
+        'https://hydralinks.pages.dev/sources/xatab.json',
+        'https://hydralinks.pages.dev/sources/kaoskrew.json',
+        'https://hydralinks.pages.dev/sources/gog.json',
+        'https://hydralinks.pages.dev/sources/atop-games.json',
         'https://hydralinks.cloud/sources/repack-games.json',
-        'https://hydralinks.cloud/sources/dodi.json',
-        'https://hydralinks.cloud/sources/fitgirl.json',
+        'https://hydralinks.pages.dev/sources/dodi.json',
+        'https://hydralinks.pages.dev/sources/fitgirl.json',
+        'https://hydralinks.pages.dev/sources/steamrip.json'
         // Adicione mais URLs conforme necessário
     ];
 
@@ -368,4 +369,5 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Chamar a função quando a página carregar
+
 window.onload = loadJsonData;
