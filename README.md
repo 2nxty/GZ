@@ -29,8 +29,8 @@ We do not host any files or provide downloads, we index public third party data 
 
 ## Known issues
 
-- When searching with a letter or name that is common, your browser may use a lot of resources to load the entire list.
-  - To avoid this, search for the partial or full item name. Partial e.g.: `Grand Theft`, `Cyberp`, `Left 4`
+- ~~When searching with a letter or name that is common, your browser may use a lot of resources to load the entire list.~~
+  - ~~To avoid this, search for the partial or full item name. Partial e.g.: `Grand Theft`, `Cyberp`, `Left 4`~~
 
 
 ## Sources
