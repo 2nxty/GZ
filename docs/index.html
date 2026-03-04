@@ -3,141 +3,163 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GamesZone - A safe place to get games.</title>
+    <title>GamesZone</title>
     <link rel="icon" type="image/x-icon" href="fav.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script type="text/javascript" src="list.js"></script>
     <style>
-      * {
+      :root {
+        --bg:        #080808;
+        --surface:   #101010;
+        --border:    #1e1e1e;
+        --border-hi: #2e2e2e;
+        --text:      #e8e8e8;
+        --muted:     #484848;
+        --accent:    #e8e8e8;
+        --danger:    #c0392b;
+        --radius:    4px;
+        --mono:      'DM Mono', monospace;
+        --sans:      'Syne', sans-serif;
+      }
+
+      *, *::before, *::after {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: 'Montserrat', sans-serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
       }
 
       body {
-        background-color: #007070;
-        background: url('img/stock-teal.png') no-repeat center center fixed;
-        background-size: cover;
-        color: #e0e0e0;
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
         min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
+        -webkit-font-smoothing: antialiased;
       }
 
-      body::before {
+      /* Subtle grain overlay */
+      body::after {
         content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 1;
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        background-size: 128px 128px;
       }
 
+      /* ─── CONTAINER ─── */
       .container {
         width: 100%;
-        max-width: 900px;
-        padding: 10px;
+        max-width: 680px;
+        padding: 0 28px;
         position: relative;
         z-index: 2;
         text-align: center;
         min-height: 100vh;
-        /* Garante que o container ocupe a altura total da tela */
         display: flex;
         flex-direction: column;
         justify-content: center;
-        /* Centraliza o conteúdo verticalmente */
+        transition: justify-content 0.4s ease;
       }
 
       .container.active {
         justify-content: flex-start;
-        padding-top: 20px;
-        padding-bottom: 100px;
-        /* Espaço adicional no container também pode ajudar */
-        transform: none;
+        padding-top: 88px;
+        padding-bottom: 120px;
       }
 
+      /* ─── TITLE ─── */
       .title {
-        font-size: 48px;
-        color: #fff;
-        margin-bottom: 30px;
-        transition: font-size 0.5s ease;
+        font-family: var(--sans);
+        font-size: 52px;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: var(--text);
+        margin-bottom: 40px;
+        transition: font-size 0.4s ease, margin-bottom 0.4s ease, opacity 0.4s ease;
+        line-height: 1;
+      }
+
+      .title span {
+        color: var(--muted);
       }
 
       .container.active .title {
-        font-size: 36px;
+        font-size: 24px;
+        margin-bottom: 28px;
       }
 
+      /* ─── SEARCH ─── */
       .search-container {
         display: flex;
-        gap: 10px;
-        background: rgba(20, 40, 40, 0.7);
-        backdrop-filter: blur(15px);
-        padding: 15px;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        align-items: center;
+        gap: 0;
+        border-bottom: 1px solid var(--border-hi);
+        padding-bottom: 2px;
         max-width: 600px;
-        /* Ajustado para aproveitar o espaço do container */
         width: 100%;
         margin: 0 auto;
+        transition: border-color 0.3s ease;
+      }
+
+      .search-container:focus-within {
+        border-bottom-color: var(--text);
       }
 
       .search-bar {
         flex: 1;
-        padding: 12px;
+        padding: 14px 0;
         font-size: 16px;
+        font-family: var(--sans);
+        font-weight: 400;
+        letter-spacing: 0.01em;
         border: none;
-        border-radius: 8px;
-        background: rgba(50, 70, 70, 0.8);
-        color: #fff;
+        background: transparent;
+        color: var(--text);
         outline: none;
-        transition: all 0.3s ease;
+        caret-color: var(--text);
       }
 
-      .search-bar:focus {
-        background: rgba(60, 80, 80, 0.9);
-        box-shadow: 0 0 10px rgba(0, 112, 112, 0.5);
+      .search-bar::placeholder {
+        color: var(--muted);
+        font-weight: 400;
       }
 
       .search-button {
-        font-size: 1rem;
-        padding: 12px 24px;
-        background: #008080;
-        color: white;
+        font-size: 18px;
+        padding: 10px 0 10px 16px;
+        background: transparent;
+        color: var(--muted);
         border: none;
-        border-radius: 8px;
         cursor: pointer;
-        transition: transform 0.2s ease, background 0.3s ease;
+        transition: color 0.2s ease;
+        line-height: 1;
       }
 
       .search-button:hover {
-        background: #007070;
-        transform: scale(1.05);
+        color: var(--text);
       }
 
+      /* ─── RESULT LIST ─── */
       .result-list {
         list-style: none;
         display: none;
-        margin-top: 20px;
-        background: rgba(20, 40, 40, 0.7);
-        backdrop-filter: blur(15px);
-        border-radius: 12px;
-        padding: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        animation: fadeIn 0.5s ease;
+        margin-top: 40px;
         max-width: 600px;
-        /* Ajustado para aproveitar o espaço do container */
         width: 100%;
         margin-left: auto;
         margin-right: auto;
-        word-break: break-all;
+        animation: fadeUp 0.4s ease forwards;
       }
 
       .result-item {
@@ -145,284 +167,289 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 15px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        opacity: 0;
-        animation: slideIn 0.5s ease forwards;
-        /* animation-delay: 0.5s; */
+        padding: 18px 0;
+        border-bottom: 1px solid var(--border);
+        animation: fadeUp 0.4s ease forwards;
+        gap: 20px;
+        cursor: default;
+        transition: background 0.2s ease;
       }
 
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px); /* Começa 20px abaixo */
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0); /* Termina na posição original */
-        }
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
+      .result-item:hover {
+        border-bottom-color: var(--border-hi);
       }
 
       .result-item:last-child {
         border-bottom: none;
       }
 
+      .result-item:hover .item-button {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .item-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        text-align: left;
+        min-width: 0;
+      }
+
+      .item-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #909090;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.2s ease;
+      }
+
+      .result-item:hover .item-name {
+        color: #ffffff;
+      }
+
+      .item-meta {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .item-button {
+        flex-shrink: 0;
+        font-size: 18px;
+        padding: 0;
+        background: transparent;
+        color: var(--muted);
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition: color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+        opacity: 0.5;
+        transform: translateX(-4px);
+        line-height: 1;
+        display: flex;
+        align-items: center;
+      }
+
+      .item-button:hover {
+        color: var(--text);
+        opacity: 1;
+        transform: translateX(2px) !important;
+      }
+
+      /* ─── MODAL ─── */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.2s ease;
+      }
+
+      .modal-box {
+        background: var(--surface);
+        border: 1px solid var(--border-hi);
+        padding: 32px;
+        border-radius: var(--radius);
+        max-width: 460px;
+        width: 90%;
+        color: var(--text);
+        animation: fadeUp 0.3s ease;
+      }
+
+      .modal-title {
+        font-family: var(--sans);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 24px;
+        line-height: 1.3;
+      }
+
+      .modal-links {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 24px;
+      }
+
       .result-li {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+        transition: color 0.2s ease;
       }
 
       .result-li:last-child {
         border-bottom: none;
       }
 
-      .item-info {
+      .result-li span {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: #909090;
         display: flex;
         align-items: center;
-        gap: 15px;
-        text-align: left;
+        gap: 10px;
+        letter-spacing: 0.02em;
+        transition: color 0.2s ease;
       }
 
-      .item-image {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        display: none;
+      .result-li:hover span {
+        color: #ffffff;
       }
 
-      .item-name {
-        font-size: 16px;
-        color: #e0e0e0;
-        padding-right: 20px;
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
       }
 
+      /* ─── BUTTONS ─── */
+      .confirmation-button,
+      .clos-button,
       .item-button {
-        font-size: 1.1rem;
-        padding: 8px 16px;
-        background: #008080;
-        color: white;
-        border: none;
-        border-radius: 8px;
+        font-family: var(--mono);
         cursor: pointer;
-        text-decoration: none;
-        transition: transform 0.2s ease, background 0.3s ease;
-      }
-
-      .item-button:hover {
-        background: #007070;
-        transform: scale(1.05);
+        border: none;
+        transition: opacity 0.2s ease, background 0.2s ease;
       }
 
       .confirmation-button {
-        margin-top: 15px;
-        font-size: 0.8rem;
+        font-size: 11px;
         padding: 8px 16px;
-        background: #008080; 
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        text-decoration: none;
-        transition: transform 0.2s ease, background 0.3s ease;
+        background: var(--text);
+        color: var(--bg);
+        border-radius: var(--radius);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
       .confirmation-button:hover {
-        background: #007070; 
-        transform: scale(1.05);
+        opacity: 0.8;
       }
 
       .clos-button {
-        margin-top: 15px;
-        font-size: 0.8rem;
+        font-size: 11px;
         padding: 8px 16px;
-        background: #d1473b;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        text-decoration: none;
-        transition: transform 0.2s ease, background 0.3s ease;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border-hi);
+        border-radius: var(--radius);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
       .clos-button:hover {
-        background: #ab392e;
-        transform: scale(1.05);
+        color: var(--text);
+        border-color: var(--muted);
       }
 
-      /* Footer da página Download */
+      /* ─── FOOTER ─── */
       .footer {
-        background: rgba(20, 40, 40, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-bottom: none;
-        color: #d0d0d0;
-        padding: 20px;
-        border-radius: 12px 12px 0 0;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(15px);
-        width: 100%;
         position: fixed;
         bottom: 0;
+        width: 100%;
+        padding: 20px 28px;
         z-index: 2;
-      }
-
-      body.dark .footer {
-        text-decoration: none;
-        background: rgba(20, 40, 40, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-bottom: none;
-      }
-
-      body.light .footer {
-        text-decoration: none;
-        background: rgba(245, 245, 245, 0.7);
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-bottom: none;
+        border-top: 1px solid var(--border);
+        background: var(--bg);
       }
 
       .footer-content {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        max-width: 1200px;
+        max-width: 680px;
         margin: 0 auto;
-        text-decoration: none;
       }
 
       .footer p {
-        font-size: 14px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.03em;
       }
 
-      body.dark .footer p {
-        color: #d0d0d0;
-      }
-
-      body.light .footer p {
-        color: #666666;
+      .footer-links {
+        display: flex;
+        gap: 24px;
+        align-items: center;
       }
 
       .footer-links a {
+        font-family: var(--mono);
         text-decoration: none;
-        margin-left: 20px;
-        font-size: 14px;
-        color: inherit;
-        transition: color 0.3s;
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.03em;
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
 
-      .curp {
-        cursor: pointer;
+      .footer-links a:hover {
+        color: var(--text);
       }
 
-      body.dark .footer-links a {
-        color: #d0d0d0;
-      }
+      .curp { cursor: pointer; }
 
-      body.light .footer-links a {
-        color: #666666;
-      }
-
-      .footer-links a:hover {}
-
-      i.baixo {
-        position: relative;
-        font-size: 20px;
-        top: 2px;
+      /* ─── ANIMATIONS ─── */
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
       }
 
       @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+        from { opacity: 0; }
+        to   { opacity: 1; }
       }
 
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateX(-20px);
-        }
+      /* ─── STAGGER ─── */
+      .result-item:nth-child(1)  { animation-delay: 0.04s; }
+      .result-item:nth-child(2)  { animation-delay: 0.08s; }
+      .result-item:nth-child(3)  { animation-delay: 0.12s; }
+      .result-item:nth-child(4)  { animation-delay: 0.16s; }
+      .result-item:nth-child(5)  { animation-delay: 0.20s; }
+      .result-item:nth-child(6)  { animation-delay: 0.24s; }
+      .result-item:nth-child(7)  { animation-delay: 0.28s; }
+      .result-item:nth-child(8)  { animation-delay: 0.32s; }
+      .result-item:nth-child(9)  { animation-delay: 0.36s; }
+      .result-item:nth-child(10) { animation-delay: 0.40s; }
 
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-
-      @media (max-width: 768px) {
-        .footer-content {
-          flex-direction: column;
-          text-align: center;
-        }
-
-        .footer-links {
-          margin-top: 10px;
-        }
-
-        .footer-links a {
-          margin: 0 10px;
-        }
-
-        .search-container {}
-      }
-
-      .result-item:nth-child(1) {
-        animation-delay: 0.1s;
-      }
-
-      .result-item:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-
-      .result-item:nth-child(3) {
-        animation-delay: 0.3s;
-      }
-
-      /* ===== Scrollbar CSS ===== */
-      /* Firefox */
+      /* ─── SCROLLBAR ─── */
       * {
         scrollbar-width: thin;
-        scrollbar-color: #006060 #0c1a1a;
+        scrollbar-color: var(--border-hi) var(--bg);
       }
+      *::-webkit-scrollbar { width: 6px; }
+      *::-webkit-scrollbar-track { background: var(--bg); }
+      *::-webkit-scrollbar-thumb { background-color: var(--border-hi); border-radius: 3px; }
 
-      /* Chrome, Edge, and Safari */
-      *::-webkit-scrollbar {
-        width: 15px;
-      }
-
-      *::-webkit-scrollbar-track {
-        background: #0c1a1a;
-      }
-
-      *::-webkit-scrollbar-thumb {
-        background-color: #006060;
-        border-radius: 10px;
-        border: 0px solid #ffffff;
+      /* ─── MOBILE ─── */
+      @media (max-width: 600px) {
+        .title { font-size: 36px; }
+        .container.active .title { font-size: 20px; }
+        .footer-content { flex-direction: column; gap: 10px; text-align: center; }
+        .footer-links { justify-content: center; }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1 class="title">GamesZone</h1>
+      <h1 class="title">GamesZone<span>.</span></h1>
       <div class="search-container">
         <input type="text" class="search-bar" placeholder="Search games...">
         <button class="search-button">
@@ -431,48 +458,16 @@
       </div>
       <ul class="result-list"></ul>
     </div>
+
     <footer class="footer">
       <div class="footer-content">
-        <p>GamesZone © 2025 - A safe place to get games.</p>
+        <p>GamesZone © 2026 — A safe place to get games.</p>
         <div class="footer-links">
-          <!--a href="" target="_blank">Data from 666</a>
-          <a class="curp" onclick="goback()"><i class="bi bi-download baixo"></i> Install on Hydra</a-->
-          <!--button id="openTextModal">Text Modal</button-->
           <a href="https://github.com/2nxty/gz" target="_blank">
-            <i class="bi bi-github baixo"></i> GitHub </a>
+            <i class="bi bi-github"></i> GitHub
+          </a>
         </div>
       </div>
     </footer>
-    
-    <script>
-      function goback() {
-        window.location.href = "index.html";
-      }
-
-      function installOnHydra() {
-        window.open("hydralauncher://install-source?urls=https://cdn.nxty.cc/gz.json");
-      }
-      document.getElementById('openTextModal').addEventListener('click', () => {
-        createTextModal(
-          'Title',
-          'Text',
-          () => {
-              console.log('Callback example');
-          }
-        );
-      });
-
-      
-    </script>
-
-    <script type="text/javascript">
-      var app_url = 'https://exe.io/';
-      var app_api_token = '0e4e671fe64f45fdb2df40d25a240e378c1892a2';
-      var app_advert = 2;
-      var app_exclude_domains = ["gamesz.one","*.github.com","github.com"];
-    </script>
-    <script src='//exe.io/js/full-page-script.js'></script>
   </body>
 </html>
-
-
