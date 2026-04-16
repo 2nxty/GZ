@@ -237,18 +237,18 @@ async function loadJsonData() {
         'https://raw.githubusercontent.com/srtmd/cnx/refs/heads/main/docs/gz.json',
         'https://raw.githubusercontent.com/Shisuiicaro/source/refs/heads/main/shisuyssource.json',
         'https://davidkazumi-github-io.pages.dev/fontekazumi.json',
-        'https://hydralinks.pages.dev/sources/onlinefix.json',
-        'https://hydralinks.pages.dev/sources/xatab.json',
-        'https://hydralinks.pages.dev/sources/kaoskrew.json',
-        'https://hydralinks.pages.dev/sources/gog.json',
-        'https://hydralinks.pages.dev/sources/atop-games.json',
-        'https://raw.githubusercontent.com/Wkeynhk/Rutor/refs/heads/main/rutor.json',
-        'https://hydralinks.pages.dev/sources/dodi.json',
-        'https://hydralinks.pages.dev/sources/fitgirl.json',
-        'https://hydralinks.pages.dev/sources/steamrip.json',
-        'https://raw.githubusercontent.com/Wkeynhk/Rutor/refs/heads/main/steamgg.json',
-        'https://hydralinks.pages.dev/sources/rexagames.json',
-        'https://hydralinks.pages.dev/sources/tinyrepacks.json'
+        'https://hydralinks.cloud/sources/onlinefix.json',
+        'https://hydralinks.cloud/sources/xatab.json',
+        'https://hydralinks.cloud/sources/kaoskrew.json',
+        'https://hydralinks.cloud/sources/gog.json',
+        'https://hydralinks.cloud/sources/atop-games.json',
+        'https://wkeynhk.online/rutor.json',
+        'https://hydralinks.cloud/sources/dodi.json',
+        'https://hydralinks.cloud/sources/fitgirl.json',
+        'https://hydralinks.cloud/sources/steamrip.json',
+        'https://wkeynhk.online/steamgg.json',
+        'https://hydralinks.cloud/sources/rexagames.json',
+        'https://hydralinks.cloud/sources/tinyrepacks.json'
     ];
 
     try {
